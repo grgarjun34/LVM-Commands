@@ -1,0 +1,59 @@
+How to Create LVM in Linux Step by Step
+
+=> Add the new disk from ESXI or vCentos
+
+After added Disk 
+
+=> Check disk
+	# fdisk -l or # lsblk
+
+=> Crate New Partition using "fdisk" tool
+	# fdisk /dev/sdb or /dev/sdc etc...
+		and follow the intruction ......
+
+=> Check Physicall Volumes
+	# pvdisplay or pvs
+
+=> Initializes the partition
+	# pvcreate /dev/sdb1
+
+=> Scanning for Block Devices
+	# lvmdiskscan
+
+=> Create volume group name
+		=> Check VG before you create VG
+	# vgcreate my_newvg /dev/sdb1	
+		In this case "my_newvg" is my new Volume Group
+
+=> Create a Logical Volume
+		=> Check LV before you create LV
+	# lvcreate --name my_newlv -l 100%FREE vg_newlvm
+        # lvcreate -n my_newlv -l 100%FREE vg_newlvm
+		In this case "my_newlv" is my new Logical Volume
+
+=> Use the mkfs command to format a newly created LVM
+	# mkfs.ext4 /dev/my_newvg/my_newlv
+
+=> Create the mount point and mount the new LVM
+		Create directory (mount point)
+	# mkdir -p /data
+		Now Mount new LVM
+	# mount /dev/my_newvg/my_newlv /data
+
+=> Verify the new disk layout
+	# df -h
+
+=> Insert the corresponding entries in "/etc/fstab"
+		display block id using following command
+	# blkid /dev/my_newvg/my_newlv
+	and add those block id like this
+
+		UUID=0382814b-c8f8-4027-987f-ef74eb5d9dfa	/data		ext4    defaults        0 0
+	save and exit
+
+
+=> Reduce and Extend LVM
+	# lvreduce -L -2.5G -r /dev/my_newvg/my_newlv
+	# lvextend -l +100%FREE -r /dev/my_newvg/my_newlv
+
+=> Before reduce or Extend do not forget to unmount
