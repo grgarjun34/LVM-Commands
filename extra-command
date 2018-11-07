@@ -1,0 +1,3 @@
+## To check partition
+lsblk
+df -h
