@@ -1,0 +1,34 @@
+Remove LVM 
+(/dev/check/test mounted to /apple)
+	# umount /dev/check/test	(/dev/check = VG, /dev/check/test = LV)
+
+Remove parameter from /etc/fstab
+	# vim /etc/fstab		(/dev/check/test mounted to /apple) 
+		UUID=3554def3-43ee-4a68-b81d-fc4b75dce291       /apple  ext4    defaults        0 0
+	save & exit
+
+Remove Logical Volume
+	# lvremove /dev/check/test
+	   Do you really want to remove active logical volume check/test? [y/n]: y
+ 	   Logical volume "test" successfully removed
+
+Remove Volume Group
+	# vgremove /dev/check
+  	  Volume group "check" successfully removed
+	
+Remove Physical Volume
+	# pvremove /dev/sdc1
+  	  Labels on physical volume "/dev/sdc1" successfully wiped.
+	
+Delte Partition
+	# fdisk /dev/sdc
+		Command (m for help) : m
+		d	delete a partition
+	then 	w	write table to disk and exit
+
+To check
+	# lsblk
+	# df -h
+
+
+
